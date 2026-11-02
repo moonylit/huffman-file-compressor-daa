@@ -8,9 +8,9 @@
     :root {
       --bg-primary: #0a0e17;
       --bg-secondary: #111827;
-      --bg-card: rgba(17, 24, 39, 0.85);
+      --bg-card: rgba(17, 24, 39, 0.88);
       --bg-card-hover: rgba(31, 41, 55, 0.95);
-      --border-color: rgba(75, 85, 99, 0.4);
+      --border-color: rgba(75, 85, 99, 0.45);
       --border-accent: #3b82f6;
       --text-main: #f9fafb;
       --text-muted: #9ca3af;
@@ -55,13 +55,13 @@
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
-      padding-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border-color);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .logo-group h1 {
-      font-size: 1.75rem;
+      font-size: 1.7rem;
       font-weight: 800;
       background: linear-gradient(135deg, #60a5fa, #c084fc, #34d399);
       -webkit-background-clip: text;
@@ -73,7 +73,7 @@
 
     .logo-group p {
       color: var(--text-muted);
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       margin-top: 0.25rem;
     }
 
@@ -110,7 +110,7 @@
     .dashboard-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     @media (min-width: 1024px) {
@@ -125,19 +125,19 @@
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-color);
       border-radius: 0.75rem;
-      padding: 1.25rem;
+      padding: 1.15rem;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
     }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.45rem;
       border-bottom: 1px solid rgba(75, 85, 99, 0.25);
     }
 
@@ -147,10 +147,38 @@
       gap: 0.5rem;
     }
 
-    /* Input Controls */
+    /* Select Dropdown & Inputs */
+    .select-preset-wrapper {
+      margin-bottom: 0.75rem;
+    }
+    .select-preset-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+    select.preset-dropdown {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid var(--border-color);
+      border-radius: 0.4rem;
+      color: #93c5fd;
+      font-size: 0.825rem;
+      font-weight: 600;
+      padding: 0.45rem 0.65rem;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    select.preset-dropdown:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+
     textarea {
       width: 100%;
-      height: 140px;
+      height: 110px;
       background: rgba(15, 23, 42, 0.7);
       border: 1px solid var(--border-color);
       border-radius: 0.5rem;
@@ -167,40 +195,17 @@
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
     }
 
-    .preset-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.6rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .btn-preset {
-      background: rgba(31, 41, 55, 0.8);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      font-size: 0.725rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: 0.375rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-preset:hover {
-      background: rgba(59, 130, 246, 0.2);
-      color: #93c5fd;
-      border-color: rgba(59, 130, 246, 0.4);
-    }
-
     .file-dropzone {
       border: 2px dashed var(--border-color);
       border-radius: 0.5rem;
-      padding: 0.75rem;
+      padding: 0.6rem;
       text-align: center;
       background: rgba(15, 23, 42, 0.4);
       cursor: pointer;
       transition: all 0.2s;
-      font-size: 0.8rem;
+      font-size: 0.775rem;
       color: var(--text-muted);
+      margin-top: 0.6rem;
     }
     .file-dropzone:hover {
       border-color: var(--accent-blue);
@@ -225,7 +230,7 @@
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--border-color);
       border-radius: 0.5rem;
-      padding: 0.875rem;
+      padding: 0.8rem;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -245,23 +250,23 @@
     .metric-box.amber::before { background: var(--accent-amber); }
 
     .metric-label {
-      font-size: 0.725rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-dim);
       font-weight: 600;
     }
     .metric-value {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--text-main);
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
       font-family: var(--font-mono);
     }
     .metric-sub {
-      font-size: 0.7rem;
+      font-size: 0.675rem;
       color: var(--text-muted);
-      margin-top: 0.15rem;
+      margin-top: 0.1rem;
     }
 
     /* Verification Banner */
@@ -269,13 +274,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.75rem 1rem;
+      padding: 0.65rem 1rem;
       border-radius: 0.5rem;
       background: rgba(16, 185, 129, 0.12);
       border: 1px solid rgba(16, 185, 129, 0.35);
       color: #6ee7b7;
       margin-bottom: 1.25rem;
-      font-size: 0.825rem;
+      font-size: 0.8rem;
     }
     .verification-card.fail {
       background: rgba(244, 63, 94, 0.12);
@@ -285,7 +290,7 @@
 
     /* Tables */
     .table-container {
-      max-height: 280px;
+      max-height: 220px;
       overflow-y: auto;
       border-radius: 0.375rem;
       border: 1px solid var(--border-color);
@@ -299,14 +304,14 @@
     th {
       background: #1f2937;
       color: var(--text-muted);
-      padding: 0.5rem 0.75rem;
+      padding: 0.45rem 0.65rem;
       font-weight: 600;
       position: sticky;
       top: 0;
       z-index: 2;
     }
     td {
-      padding: 0.45rem 0.75rem;
+      padding: 0.4rem 0.65rem;
       border-top: 1px solid rgba(75, 85, 99, 0.2);
       color: var(--text-main);
     }
@@ -332,7 +337,7 @@
     /* Tree SVG Container */
     .tree-viewport {
       width: 100%;
-      height: 480px;
+      height: 380px;
       background: radial-gradient(circle at center, #111827 0%, #0b0f17 100%);
       border: 1px solid var(--border-color);
       border-radius: 0.5rem;
@@ -345,8 +350,8 @@
     }
     .tree-controls {
       position: absolute;
-      bottom: 12px;
-      right: 12px;
+      bottom: 10px;
+      right: 10px;
       display: flex;
       gap: 6px;
       z-index: 10;
@@ -355,9 +360,9 @@
       background: rgba(17, 24, 39, 0.85);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 0.35rem 0.65rem;
+      padding: 0.3rem 0.6rem;
       border-radius: 0.375rem;
-      font-size: 0.75rem;
+      font-size: 0.725rem;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -366,20 +371,86 @@
       border-color: var(--accent-blue);
     }
 
+    /* Min-Heap Stepper Tracer Styles */
+    .tracer-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 0.5rem;
+      padding: 0.85rem;
+      margin-top: 1rem;
+    }
+    .tracer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+    .tracer-btn-bar {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-step {
+      background: #1f2937;
+      border: 1px solid var(--border-color);
+      color: #93c5fd;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-step:hover:not(:disabled) {
+      background: var(--accent-purple);
+      color: #fff;
+      border-color: var(--accent-purple);
+    }
+    .btn-step:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .step-log {
+      font-family: var(--font-mono);
+      font-size: 0.785rem;
+      color: #e2e8f0;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      border-left: 3px solid var(--accent-purple);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .heap-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+      margin-top: 0.4rem;
+    }
+    .heap-chip {
+      background: #1e1b4b;
+      border: 1px solid #6366f1;
+      color: #c7d2fe;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      padding: 0.15rem 0.45rem;
+      border-radius: 9999px;
+    }
+
     /* Bitstream Preview */
     .bitstream-box {
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border-color);
       border-radius: 0.5rem;
-      padding: 0.75rem;
+      padding: 0.65rem;
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.775rem;
       color: #93c5fd;
-      max-height: 120px;
+      max-height: 100px;
       overflow-y: auto;
       word-break: break-all;
-      letter-spacing: 0.08em;
-      line-height: 1.6;
+      letter-spacing: 0.06em;
+      line-height: 1.5;
     }
     .bit-token {
       display: inline-block;
@@ -392,59 +463,16 @@
       color: #fbbf24;
     }
 
-    /* Tab Switcher */
-    .tab-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 0.4rem 0.8rem;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    .tab-btn.active {
-      color: var(--accent-blue);
-      border-bottom-color: var(--accent-blue);
-    }
-
-    /* Interactive Stepper */
-    .stepper-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.6rem;
-    }
-    .stepper-btn {
-      background: rgba(59, 130, 246, 0.15);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      color: #93c5fd;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.4rem 0.8rem;
-      border-radius: 0.375rem;
-      cursor: pointer;
-    }
-    .stepper-btn:hover {
-      background: var(--accent-blue);
-      color: #fff;
-    }
-
     /* Footer */
     footer {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
       border-top: 1px solid var(--border-color);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       color: var(--text-dim);
-      font-size: 0.8rem;
+      font-size: 0.785rem;
     }
   </style>
 </head>
@@ -454,7 +482,7 @@
     <header>
       <div class="logo-group">
         <h1>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="4" r="3" />
             <circle cx="6" cy="18" r="3" />
             <circle cx="18" cy="18" r="3" />
@@ -510,31 +538,36 @@
     <!-- Dashboard Core Grid -->
     <div class="dashboard-grid">
       <!-- Left Column: Controls, Tables, Bitstream -->
-      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <div style="display: flex; flex-direction: column; gap: 1.15rem;">
         <!-- Input Card -->
         <div class="card">
           <div class="card-title">
             <span class="title-left">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
-              Input Data Buffer
+              Input Data Buffer &amp; Presets
             </span>
-            <span style="font-size: 0.75rem; color: var(--text-dim);" id="char-counter">0 chars</span>
+            <span style="font-size: 0.725rem; color: var(--text-dim);" id="char-counter">0 chars</span>
+          </div>
+
+          <!-- Preset Dropdown -->
+          <div class="select-preset-wrapper">
+            <label class="select-preset-label" for="preset-select">Select Academic Benchmark Preset:</label>
+            <select id="preset-select" class="preset-dropdown" onchange="onPresetSelected(this.value)">
+              <option value="sentence">1. Standard Sentence (Vowels, Consonants, Spaces)</option>
+              <option value="repetitive">2. Repetitive Pattern ("AAAAABBBCCCDDE" - High Skew)</option>
+              <option value="edge_single">3. Edge Case: Single Repeated Character ("AAAAAAAAAA")</option>
+              <option value="edge_minimal">4. Edge Case: Minimal 2-Symbol Alphabet ("AB")</option>
+              <option value="classic">5. Classic DAA: "ABRACADABRA"</option>
+            </select>
           </div>
 
           <textarea id="text-input" placeholder="Type or paste arbitrary text here to witness greedy tree synthesis in real-time..."></textarea>
 
-          <div class="preset-bar">
-            <button class="btn-preset" onclick="loadPreset('ABRACADABRA')">ABRACADABRA</button>
-            <button class="btn-preset" onclick="loadPreset('The quick brown fox jumps over the lazy dog.')">Pangram</button>
-            <button class="btn-preset" onclick="loadPreset('AAAAAABCCCCCCDDEEEEE')">Skewed Frequencies</button>
-            <button class="btn-preset" onclick="loadPreset('Greedy algorithms make the locally optimal choice at each stage with the hope of finding a global optimum.')">DAA Greedy Concept</button>
-          </div>
-
           <div class="file-dropzone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 0.25rem auto; display:block;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 0.2rem auto; display:block;">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" y1="3" x2="12" y2="15" />
@@ -548,14 +581,14 @@
         <div class="card">
           <div class="card-title">
             <span class="title-left">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                 <line x1="3" y1="9" x2="21" y2="9" />
                 <line x1="9" y1="21" x2="9" y2="9" />
               </svg>
               Prefix Codebook &amp; Symbol Probabilities
             </span>
-            <span style="font-size: 0.75rem; color: #93c5fd;" id="alphabet-k">k = 0</span>
+            <span style="font-size: 0.725rem; color: #93c5fd;" id="alphabet-k">k = 0</span>
           </div>
 
           <div class="table-container">
@@ -581,14 +614,14 @@
         <div class="card">
           <div class="card-title">
             <span class="title-left">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="4 7 4 4 20 4 20 7" />
                 <line x1="9" y1="20" x2="15" y2="20" />
                 <line x1="12" y1="4" x2="12" y2="20" />
               </svg>
               Continuous Encoded Bitstream
             </span>
-            <button class="btn-preset" onclick="copyBitstream()">Copy Bits</button>
+            <button class="btn-step" onclick="copyBitstream()">Copy Bits</button>
           </div>
 
           <div class="bitstream-box" id="bitstream-display">
@@ -597,12 +630,12 @@
         </div>
       </div>
 
-      <!-- Right Column: Interactive Tree Visualizer & Theory -->
-      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <!-- Right Column: Interactive Tree Visualizer & Min-Heap Step Tracer -->
+      <div style="display: flex; flex-direction: column; gap: 1.15rem;">
         <div class="card" style="flex: 1; display: flex; flex-direction: column;">
           <div class="card-title">
             <span class="title-left">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="5" r="3" />
                 <circle cx="6" cy="19" r="3" />
                 <circle cx="18" cy="19" r="3" />
@@ -610,8 +643,8 @@
               </svg>
               Greedy Min-Heap Tree Visualizer
             </span>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">
-              Left Branch: <strong style="color:var(--accent-cyan)">'0'</strong> &bull; Right Branch: <strong style="color:var(--accent-amber)">'1'</strong>
+            <span style="font-size: 0.725rem; color: var(--text-muted);">
+              Left: <strong style="color:var(--accent-cyan)">'0'</strong> &bull; Right: <strong style="color:var(--accent-amber)">'1'</strong>
             </span>
           </div>
 
@@ -629,18 +662,47 @@
             <div class="tree-controls">
               <button class="tree-btn" onclick="zoomTree(1.15)">Zoom +</button>
               <button class="tree-btn" onclick="zoomTree(0.85)">Zoom &minus;</button>
-              <button class="tree-btn" onclick="resetTreeView()">Reset</button>
+              <button class="tree-btn" onclick="resetTreeView()">Reset View</button>
+            </div>
+          </div>
+
+          <!-- Min-Heap Greedy Construction Step Tracer -->
+          <div class="tracer-card">
+            <div class="tracer-header">
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <strong style="color: #c084fc; font-size: 0.85rem;">Min-Heap Greedy Construction Tracer</strong>
+              </div>
+              <div class="tracer-btn-bar">
+                <button class="btn-step" id="btn-prev-step" onclick="prevTracerStep()">◀ Prev</button>
+                <button class="btn-step" id="btn-play-step" onclick="toggleAutoPlay()">▶ Play</button>
+                <button class="btn-step" id="btn-next-step" onclick="nextTracerStep()">Next ▶</button>
+                <button class="btn-step" onclick="resetTracer()">⏮ Reset</button>
+              </div>
+            </div>
+
+            <div class="step-log" id="tracer-log">
+              Initializing Min-Heap with unique alphabet leaf nodes...
+            </div>
+
+            <div style="font-size: 0.725rem; color: var(--text-dim); margin-bottom: 0.2rem;">
+              Current Min-Heap State (<span id="tracer-step-counter">Step 0/0</span>):
+            </div>
+            <div class="heap-chips-container" id="heap-chips">
+              <!-- Heap chips dynamically rendered -->
             </div>
           </div>
 
           <!-- Theoretical Highlights Drawer -->
-          <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.785rem; color: var(--text-muted);">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
+          <div style="margin-top: 0.85rem; padding: 0.65rem 0.85rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.775rem; color: var(--text-muted);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
               <strong style="color: #93c5fd;">DAA Theorem Checks</strong>
               <span id="kraft-indicator" style="color: #6ee7b7; font-weight:700;">Kraft's Sum &le; 1.0 (Valid)</span>
             </div>
             <p id="theory-notes">
-              <strong>Greedy Choice Property:</strong> Merging the two smallest frequency subtrees guarantees that least-frequent symbols are pushed to maximum depth, yielding the minimal weighted external path length.
+              <strong>Greedy Choice Property:</strong> Merging the two smallest frequency subtrees guarantees least-frequent symbols reside at maximum depth, yielding the minimal weighted external path length.
             </p>
           </div>
         </div>
@@ -650,7 +712,7 @@
     <!-- Footer -->
     <footer>
       <div>Design and Analysis of Algorithms (DAA) &bull; Academic Evaluation Studio</div>
-      <div>Zero Third-Party Dependencies &bull; Pure Client-Side Dynamic Synthesis</div>
+      <div>Zero Third-Party Dependencies &bull; Verified Dynamic Client-Side Synthesis</div>
     </footer>
   </div>
 
@@ -720,6 +782,11 @@
           } else break;
         }
       }
+      clone() {
+        const h = new MinHeap();
+        h.data = [...this.data];
+        return h;
+      }
     }
 
     // Global application state
@@ -730,8 +797,23 @@
     let panX = 0, panY = 0, zoomScale = 1;
     let isPanning = false, startPanX = 0, startPanY = 0;
 
+    // Step Tracer State
+    let tracerSteps = [];
+    let currentStepIdx = 0;
+    let autoPlayTimer = null;
+
+    // Preset Library
+    const PRESETS = {
+      sentence: "The quick brown fox jumps over the lazy dog.",
+      repetitive: "AAAAABBBCCCDDE",
+      edge_single: "AAAAAAAAAA",
+      edge_minimal: "AB",
+      classic: "ABRACADABRA"
+    };
+
     // DOM Elements
     const textInput = document.getElementById("text-input");
+    const presetSelect = document.getElementById("preset-select");
     const charCounter = document.getElementById("char-counter");
     const valOrigSize = document.getElementById("val-orig-size");
     const valOrigBits = document.getElementById("val-orig-bits");
@@ -751,16 +833,29 @@
     const treeContainer = document.getElementById("tree-container");
     const kraftIndicator = document.getElementById("kraft-indicator");
 
-    // Initialize listeners
-    textInput.addEventListener("input", () => runHuffmanPipeline());
+    // Tracer DOM Elements
+    const tracerLog = document.getElementById("tracer-log");
+    const tracerStepCounter = document.getElementById("tracer-step-counter");
+    const heapChips = document.getElementById("heap-chips");
+    const btnPrevStep = document.getElementById("btn-prev-step");
+    const btnNextStep = document.getElementById("btn-next-step");
+    const btnPlayStep = document.getElementById("btn-play-step");
+
+    // Listeners
+    textInput.addEventListener("input", () => {
+      runHuffmanPipeline();
+    });
     setupPanAndZoom();
 
     // Default start
-    loadPreset("ABRACADABRA");
+    onPresetSelected("sentence");
 
-    function loadPreset(text) {
-      textInput.value = text;
-      runHuffmanPipeline();
+    function onPresetSelected(key) {
+      if (PRESETS[key]) {
+        textInput.value = PRESETS[key];
+        presetSelect.value = key;
+        runHuffmanPipeline();
+      }
     }
 
     function handleFileSelect(evt) {
@@ -769,6 +864,7 @@
       const reader = new FileReader();
       reader.onload = (e) => {
         textInput.value = e.target.result;
+        presetSelect.value = "";
         runHuffmanPipeline();
       };
       reader.readAsText(file);
@@ -791,6 +887,7 @@
         const reader = new FileReader();
         reader.onload = (ev) => {
           textInput.value = ev.target.result;
+          presetSelect.value = "";
           runHuffmanPipeline();
         };
         reader.readAsText(file);
@@ -798,9 +895,10 @@
     });
 
     /* -------------------------------------------------------------------------
-       PIPELINE EXECUTION: FREQUENCY -> HEAP TREE -> CODES -> ENCODE -> VERIFY
+       PIPELINE EXECUTION: FREQUENCY -> HEAP TREE -> TRACER -> CODES -> VERIFY
        ------------------------------------------------------------------------- */
     function runHuffmanPipeline() {
+      stopAutoPlay();
       const text = textInput.value;
       const n = text.length;
       charCounter.innerText = `${n.toLocaleString()} chars`;
@@ -821,25 +919,8 @@
       const k = uniqueChars.length;
       alphabetK.innerText = `Alphabet |Σ| = ${k}`;
 
-      // 2. Greedy Min-Heap Tree Construction O(k log k)
-      let seq = 0;
-      const heap = new MinHeap();
-      for (const char of uniqueChars) {
-        heap.push(new HuffmanNode(char, currentFreqTable[char], null, null, ++seq));
-      }
-
-      if (k === 1) {
-        const leaf = heap.pop();
-        currentTreeRoot = new HuffmanNode(null, leaf.freq, leaf, null, ++seq);
-      } else {
-        while (heap.size() > 1) {
-          const left = heap.pop();
-          const right = heap.pop();
-          const parent = new HuffmanNode(null, left.freq + right.freq, left, right, ++seq);
-          heap.push(parent);
-        }
-        currentTreeRoot = heap.pop();
-      }
+      // 2. Greedy Min-Heap Tree Construction with Step Recording O(k log k)
+      recordTracerSteps(uniqueChars, currentFreqTable);
 
       // 3. Prefix Codebook Generation O(k)
       currentCodeTable = {};
@@ -936,8 +1017,160 @@
       // 9. Render Bitstream
       renderBitstream(text, encodedBits);
 
-      // 10. Render Interactive Tree
+      // 10. Render Interactive Tree & Update Tracer to end
       renderTreeSVG();
+      currentStepIdx = tracerSteps.length - 1;
+      updateTracerUI();
+    }
+
+    /* -------------------------------------------------------------------------
+       MIN-HEAP STEP-BY-STEP TRACER RECORDING
+       ------------------------------------------------------------------------- */
+    function recordTracerSteps(uniqueChars, freqTable) {
+      tracerSteps = [];
+      let seq = 0;
+      const heap = new MinHeap();
+
+      // Initial Leaf insertion
+      for (const char of uniqueChars) {
+        heap.push(new HuffmanNode(char, freqTable[char], null, null, ++seq));
+      }
+
+      function snapshotHeap(h) {
+        return h.data.map(n => ({
+          label: n.char !== null ? formatCharLabel(n.char) : `[${n.freq}]`,
+          freq: n.freq,
+          isLeaf: n.isLeaf()
+        })).sort((a,b) => a.freq - b.freq);
+      }
+
+      tracerSteps.push({
+        stepNum: 0,
+        type: 'init',
+        description: `Initialized Min-Heap with k = ${uniqueChars.length} leaf nodes. Sorted by lowest frequency.`,
+        heap: snapshotHeap(heap),
+        popped: [],
+        pushed: null,
+        activeRoot: null
+      });
+
+      if (uniqueChars.length === 1) {
+        const leaf = heap.pop();
+        currentTreeRoot = new HuffmanNode(null, leaf.freq, leaf, null, ++seq);
+        tracerSteps.push({
+          stepNum: 1,
+          type: 'finish',
+          description: `Single distinct character detected. Created root with left child '${formatCharLabel(leaf.char)}'.`,
+          heap: [{ label: `Root[${currentTreeRoot.freq}]`, freq: currentTreeRoot.freq, isLeaf: false }],
+          popped: [leaf],
+          pushed: currentTreeRoot,
+          activeRoot: currentTreeRoot
+        });
+        return;
+      }
+
+      let stepCount = 0;
+      while (heap.size() > 1) {
+        stepCount++;
+        const left = heap.pop();
+        const right = heap.pop();
+        const parent = new HuffmanNode(null, left.freq + right.freq, left, right, ++seq);
+        heap.push(parent);
+
+        const leftLabel = left.char !== null ? `'${formatCharLabel(left.char)}'` : `Node[${left.freq}]`;
+        const rightLabel = right.char !== null ? `'${formatCharLabel(right.char)}'` : `Node[${right.freq}]`;
+
+        tracerSteps.push({
+          stepNum: stepCount,
+          type: 'merge',
+          description: `Step ${stepCount}: Popped min 1: ${leftLabel} (f=${left.freq}) and min 2: ${rightLabel} (f=${right.freq}). Pushed merged parent (f=${parent.freq}).`,
+          heap: snapshotHeap(heap),
+          popped: [left, right],
+          pushed: parent,
+          activeRoot: parent
+        });
+      }
+
+      currentTreeRoot = heap.pop();
+      tracerSteps.push({
+        stepNum: stepCount + 1,
+        type: 'finish',
+        description: `Complete! Final single node in heap is the root of the optimal Huffman Tree (Total freq = ${currentTreeRoot.freq}).`,
+        heap: [{ label: `ROOT[${currentTreeRoot.freq}]`, freq: currentTreeRoot.freq, isLeaf: false }],
+        popped: [],
+        pushed: currentTreeRoot,
+        activeRoot: currentTreeRoot
+      });
+    }
+
+    function updateTracerUI() {
+      if (tracerSteps.length === 0) return;
+      const step = tracerSteps[currentStepIdx];
+      tracerStepCounter.innerText = `Step ${currentStepIdx} / ${tracerSteps.length - 1}`;
+      tracerLog.innerHTML = step.description;
+
+      // Render heap chips
+      let chipsHtml = "";
+      step.heap.forEach(item => {
+        chipsHtml += `<span class="heap-chip">${escapeHtml(item.label)} <small style="opacity:0.8;">(f:${item.freq})</small></span>`;
+      });
+      heapChips.innerHTML = chipsHtml;
+
+      btnPrevStep.disabled = (currentStepIdx === 0);
+      btnNextStep.disabled = (currentStepIdx === tracerSteps.length - 1);
+    }
+
+    function nextTracerStep() {
+      if (currentStepIdx < tracerSteps.length - 1) {
+        currentStepIdx++;
+        updateTracerUI();
+      } else {
+        stopAutoPlay();
+      }
+    }
+
+    function prevTracerStep() {
+      if (currentStepIdx > 0) {
+        currentStepIdx--;
+        updateTracerUI();
+      }
+    }
+
+    function resetTracer() {
+      stopAutoPlay();
+      currentStepIdx = 0;
+      updateTracerUI();
+    }
+
+    function toggleAutoPlay() {
+      if (autoPlayTimer) {
+        stopAutoPlay();
+      } else {
+        if (currentStepIdx >= tracerSteps.length - 1) currentStepIdx = 0;
+        btnPlayStep.innerText = "⏸ Pause";
+        autoPlayTimer = setInterval(() => {
+          if (currentStepIdx < tracerSteps.length - 1) {
+            nextTracerStep();
+          } else {
+            stopAutoPlay();
+          }
+        }, 1200);
+      }
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        btnPlayStep.innerText = "▶ Play";
+      }
+    }
+
+    function formatCharLabel(char) {
+      if (char === " ") return "␣";
+      if (char === "\n") return "↵";
+      if (char === "\t") return "⇥";
+      return char;
     }
 
     function resetDashboard() {
@@ -952,6 +1185,9 @@
       codeTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-dim);">No data input yet.</td></tr>`;
       bitstreamDisplay.innerHTML = `<span style="color:var(--text-dim);">Bitstream preview will appear here...</span>`;
       treeCanvas.innerHTML = "";
+      tracerLog.innerHTML = "Awaiting input data...";
+      heapChips.innerHTML = "";
+      tracerStepCounter.innerText = "Step 0/0";
     }
 
     function renderCodeTable(totalChars) {
@@ -988,7 +1224,6 @@
         bitstreamDisplay.innerHTML = "";
         return;
       }
-      // Color-tokenized stream preview up to 400 chars to maintain speed
       const previewLimit = Math.min(text.length, 300);
       let html = "";
       const colors = ["#60a5fa", "#34d399", "#f472b6", "#fbbf24", "#a78bfa", "#38bdf8", "#4ade80"];
@@ -1022,16 +1257,15 @@
         return;
       }
 
-      // Compute tree positions
       let nextLeafX = 40;
-      const leafSpacing = 72;
-      const levelHeight = 65;
+      const leafSpacing = 68;
+      const levelHeight = 60;
 
       function layout(node, depth) {
         if (!node) return;
         if (node.isLeaf()) {
           node.x = nextLeafX;
-          node.y = depth * levelHeight + 50;
+          node.y = depth * levelHeight + 40;
           nextLeafX += leafSpacing;
           return;
         }
@@ -1048,20 +1282,18 @@
           node.x = nextLeafX;
           nextLeafX += leafSpacing;
         }
-        node.y = depth * levelHeight + 50;
+        node.y = depth * levelHeight + 40;
       }
 
       layout(currentTreeRoot, 0);
 
-      // Center tree
       const svgWidth = treeContainer.clientWidth;
       const treeWidth = nextLeafX;
-      panX = Math.max(30, (svgWidth - treeWidth) / 2);
-      panY = 20;
-      zoomScale = treeWidth > svgWidth ? Math.max(0.4, svgWidth / (treeWidth + 60)) : 1;
+      panX = Math.max(25, (svgWidth - treeWidth) / 2);
+      panY = 15;
+      zoomScale = treeWidth > svgWidth ? Math.max(0.35, svgWidth / (treeWidth + 60)) : 1;
       updateCanvasTransform();
 
-      // Draw Edges & Nodes
       let svgContent = "";
 
       function drawEdges(node) {
@@ -1087,23 +1319,19 @@
       function drawNodes(node) {
         if (!node) return;
         if (node.isLeaf()) {
-          let charLabel = node.char;
-          if (charLabel === " ") charLabel = "␣";
-          else if (charLabel === "\n") charLabel = "↵";
-          else if (charLabel === "\t") charLabel = "⇥";
-
+          const charLabel = formatCharLabel(node.char);
           svgContent += `
             <g transform="translate(${node.x}, ${node.y})">
-              <rect x="-26" y="-18" width="52" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="2" />
-              <text x="0" y="-2" fill="#a7f3d0" font-size="13" font-weight="800" text-anchor="middle" font-family="monospace">${escapeHtml(charLabel)}</text>
-              <text x="0" y="11" fill="#6ee7b7" font-size="10" font-weight="600" text-anchor="middle" font-family="sans-serif">f:${node.freq}</text>
+              <rect x="-24" y="-17" width="48" height="34" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="2" />
+              <text x="0" y="-1" fill="#a7f3d0" font-size="12" font-weight="800" text-anchor="middle" font-family="monospace">${escapeHtml(charLabel)}</text>
+              <text x="0" y="11" fill="#6ee7b7" font-size="9.5" font-weight="600" text-anchor="middle" font-family="sans-serif">f:${node.freq}</text>
             </g>
           `;
         } else {
           svgContent += `
             <g transform="translate(${node.x}, ${node.y})">
-              <circle cx="0" cy="0" r="16" fill="#1e1b4b" stroke="#818cf8" stroke-width="2" />
-              <text x="0" y="4" fill="#e0e7ff" font-size="11" font-weight="700" text-anchor="middle" font-family="monospace">${node.freq}</text>
+              <circle cx="0" cy="0" r="15" fill="#1e1b4b" stroke="#818cf8" stroke-width="2" />
+              <text x="0" y="4" fill="#e0e7ff" font-size="10.5" font-weight="700" text-anchor="middle" font-family="monospace">${node.freq}</text>
             </g>
           `;
         }
@@ -1146,8 +1374,8 @@
     }
 
     function resetTreeView() {
-      panX = 40;
-      panY = 20;
+      panX = 35;
+      panY = 15;
       zoomScale = 1;
       updateCanvasTransform();
     }
