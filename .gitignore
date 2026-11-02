@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.huff
+restored.txt
+.DS_Store
+Thumbs.db
+
+*_full.*

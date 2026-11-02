@@ -1,0 +1,7 @@
+Huffman coding is a greedy algorithm invented by David A. Huffman in 1952.
+It builds an optimal prefix-free binary tree using a Min-Heap priority queue.
+Each character gets a variable-length code inversely proportional to its frequency:
+frequent symbols get short codes, and rare symbols get longer codes.
+Kraft-McMillan inequality ensures that no codeword is a prefix of another!
+Lossless reconstruction guarantees 100% data integrity without any distortion.
+Design and Analysis of Algorithms - Final Evaluation Project.
