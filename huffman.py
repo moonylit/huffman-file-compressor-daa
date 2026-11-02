@@ -213,7 +213,7 @@ class HuffmanEngine:
         if not text:
             return ""
 
-        if not self.code_table:
+        if not self.code_table or any(char not in self.code_table for char in text):
             self.compute_frequencies(text)
             self.build_tree(self.frequency_table)
             self.generate_codes(self.root)
