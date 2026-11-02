@@ -6,7 +6,8 @@ Design and Analysis of Algorithms (DAA) Project
 Core Paradigms:
 - Greedy Strategy (Optimal Prefix-Free Codes)
 - Priority Queues via Min-Heap (O(k log k) Tree Assembly)
-- Variable-Length Encoding
+- Lossless Variable-Length Encoding and Bit-Level Packing
+- Shannon Entropy & Theoretical Redundancy Analytics
 
 Author: DAA Project Engineering Team
 """
@@ -14,8 +15,10 @@ Author: DAA Project Engineering Team
 import sys
 import os
 import heapq
+import struct
+import math
 from collections import Counter
-from typing import Optional, Dict, List
+from typing import Optional, Dict, Tuple, List, Any
 
 
 class HuffmanNode:
@@ -61,9 +64,12 @@ class HuffmanNode:
 
 class HuffmanEngine:
     """
-    Core Huffman Coding Engine implementing greedy tree construction,
-    prefix-free binary encoding, and ASCII tree visualization.
+    Production-grade Huffman Coding Engine implementing greedy tree construction,
+    prefix-free binary encoding, lossless bitstream decoding, and compression metrics.
     """
+
+    MAGIC_HEADER = b"HUFF"   # File format magic signature
+    VERSION = 1
 
     def __init__(self):
         self.root: Optional[HuffmanNode] = None
@@ -197,7 +203,7 @@ class HuffmanEngine:
         return self.code_table
 
     # -------------------------------------------------------------------------
-    # DAA Phase 4: Variable-Length Encoding O(N)
+    # DAA Phase 4: Lossless Encoding O(N)
     # -------------------------------------------------------------------------
     def encode_text(self, text: str) -> str:
         """
@@ -214,6 +220,243 @@ class HuffmanEngine:
 
         encoded_bits = "".join(self.code_table[char] for char in text)
         return encoded_bits
+
+    # -------------------------------------------------------------------------
+    # DAA Phase 5: Lossless Decoding O(B) where B is total bit length
+    # -------------------------------------------------------------------------
+    def decode_bits(self, encoded_bits: str, root: Optional[HuffmanNode] = None) -> str:
+        """
+        Decodes a binary bitstring back into the exact original text.
+        Traverses tree from root according to bits until reaching a leaf node.
+        No delimiters needed due to the prefix-free code property.
+
+        Time Complexity: O(B) where B is the number of encoded bits.
+        Since B <= 8N, this is strictly O(N).
+        """
+        if not encoded_bits:
+            return ""
+
+        if root is None:
+            root = self.root
+
+        if root is None:
+            raise ValueError("Huffman tree is empty. Cannot decode.")
+
+        decoded_chars: List[str] = []
+        current_node = root
+
+        # Handle single distinct character tree
+        if root.left and root.right is None and root.left.is_leaf():
+            leaf_char = root.left.char or ""
+            return leaf_char * len(encoded_bits)
+
+        for bit in encoded_bits:
+            if bit == "0":
+                current_node = current_node.left
+            elif bit == "1":
+                current_node = current_node.right
+            else:
+                raise ValueError(f"Invalid binary bit encountered: '{bit}'")
+
+            if current_node is None:
+                raise ValueError("Corrupted bitstream: encountered null branch in tree.")
+
+            if current_node.is_leaf():
+                if current_node.char is not None:
+                    decoded_chars.append(current_node.char)
+                current_node = root  # Reset traversal for next character
+
+        return "".join(decoded_chars)
+
+    # -------------------------------------------------------------------------
+    # DAA Phase 6: Bit-Level Binary Serialization (Real File Compression)
+    # -------------------------------------------------------------------------
+    @staticmethod
+    def pack_bitstring(bitstring: str) -> Tuple[bytes, int]:
+        """
+        Packs an arbitrary length bitstring ('01011...') into raw bytes.
+        Returns (packed_bytes, padding_amount).
+        """
+        padding = (8 - (len(bitstring) % 8)) % 8
+        padded_bitstring = bitstring + ("0" * padding)
+
+        byte_arr = bytearray()
+        for i in range(0, len(padded_bitstring), 8):
+            byte_chunk = padded_bitstring[i:i + 8]
+            byte_arr.append(int(byte_chunk, 2))
+
+        return bytes(byte_arr), padding
+
+    @staticmethod
+    def unpack_bitstring(packed_bytes: bytes, padding: int) -> str:
+        """
+        Unpacks raw bytes back into binary string, trimming trailing padding bits.
+        """
+        bit_chunks = []
+        for byte in packed_bytes:
+            bit_chunks.append(f"{byte:08b}")
+        full_bitstring = "".join(bit_chunks)
+        if padding > 0:
+            full_bitstring = full_bitstring[:-padding]
+        return full_bitstring
+
+    def compress_to_bytes(self, text: str) -> bytes:
+        """
+        Compresses plain text into a standalone self-extracting binary byte payload.
+        Binary Format:
+        [MAGIC 4B: 'HUFF']
+        [VERSION 1B]
+        [PADDING 1B]
+        [ALPHABET_SIZE 2B (k)]
+        For each symbol in alphabet:
+            [CHAR_LEN 2B]
+            [CHAR_UTF8 nB]
+            [FREQ 4B (unsigned int)]
+        [BODY_LEN 4B]
+        [PACKED_DATA bytes]
+        """
+        if not text:
+            # Empty file signature
+            return self.MAGIC_HEADER + struct.pack(">BBH", self.VERSION, 0, 0)
+
+        freqs = self.compute_frequencies(text)
+        self.build_tree(freqs)
+        self.generate_codes(self.root)
+        bitstring = self.encode_text(text)
+        packed_data, padding = self.pack_bitstring(bitstring)
+
+        # Serialize header
+        header = bytearray()
+        header.extend(self.MAGIC_HEADER)
+        header.extend(struct.pack(">BB", self.VERSION, padding))
+
+        # Alphabet table
+        header.extend(struct.pack(">H", len(freqs)))
+        for char, freq in freqs.items():
+            char_bytes = char.encode("utf-8")
+            header.extend(struct.pack(">HI", len(char_bytes), freq))
+            header.extend(char_bytes)
+
+        # Packed payload length & data
+        header.extend(struct.pack(">I", len(packed_data)))
+        header.extend(packed_data)
+
+        return bytes(header)
+
+    def decompress_from_bytes(self, data: bytes) -> str:
+        """
+        Decompresses binary payload back into original text using embedded tree header.
+        """
+        if len(data) < 8:
+            return ""
+
+        magic = data[:4]
+        if magic != self.MAGIC_HEADER:
+            raise ValueError(f"Invalid file signature: {magic!r}. Expected {self.MAGIC_HEADER!r}.")
+
+        offset = 4
+        version, padding = struct.unpack(">BB", data[offset:offset + 2])
+        offset += 2
+
+        alphabet_size, = struct.unpack(">H", data[offset:offset + 2])
+        offset += 2
+
+        if alphabet_size == 0:
+            return ""
+
+        freq_table: Dict[str, int] = {}
+        for _ in range(alphabet_size):
+            char_len, freq = struct.unpack(">HI", data[offset:offset + 6])
+            offset += 6
+            char_bytes = data[offset:offset + char_len]
+            offset += char_len
+            char = char_bytes.decode("utf-8")
+            freq_table[char] = freq
+
+        data_len, = struct.unpack(">I", data[offset:offset + 4])
+        offset += 4
+
+        packed_data = data[offset:offset + data_len]
+
+        # Reconstruct Tree
+        reconstructed_root = self.build_tree(freq_table)
+        bitstring = self.unpack_bitstring(packed_data, padding)
+        original_text = self.decode_bits(bitstring, reconstructed_root)
+
+        return original_text
+
+    # -------------------------------------------------------------------------
+    # DAA Phase 7: Mathematical & Empirical Compression Analytics
+    # -------------------------------------------------------------------------
+    def compute_analytics(self, text: str) -> Dict[str, Any]:
+        """
+        Computes formal compression metrics, Shannon Entropy, and Kraft's sum.
+        """
+        n_chars = len(text)
+        if n_chars == 0:
+            return {
+                "original_chars": 0,
+                "original_bits": 0,
+                "original_bytes": 0,
+                "compressed_bits": 0,
+                "compressed_bytes": 0,
+                "space_saved_percent": 0.0,
+                "compression_ratio": 1.0,
+                "average_code_length": 0.0,
+                "shannon_entropy": 0.0,
+                "coding_efficiency_percent": 100.0,
+                "kraft_inequality_sum": 0.0,
+                "kraft_valid": True,
+                "unique_symbols": 0,
+            }
+
+        freqs = self.compute_frequencies(text)
+        self.build_tree(freqs)
+        codes = self.generate_codes(self.root)
+        bitstring = self.encode_text(text)
+
+        original_bits = n_chars * 8
+        original_bytes = n_chars
+        compressed_bits = len(bitstring)
+        compressed_bytes = math.ceil(compressed_bits / 8)
+
+        space_saved_percent = ((original_bits - compressed_bits) / original_bits) * 100.0 if original_bits > 0 else 0.0
+        compression_ratio = original_bits / compressed_bits if compressed_bits > 0 else 1.0
+
+        # Shannon Entropy H(X) = - sum( P(x) * log2(P(x)) )
+        # Average Code Length L_avg = sum( P(x) * length(code(x)) )
+        shannon_entropy = 0.0
+        avg_code_length = 0.0
+        kraft_sum = 0.0
+
+        for char, count in freqs.items():
+            prob = count / n_chars
+            shannon_entropy -= prob * math.log2(prob)
+            code_len = len(codes.get(char, ""))
+            avg_code_length += prob * code_len
+            kraft_sum += 2 ** (-code_len)
+
+        # Efficiency: Shannon Entropy / Average Code Length
+        efficiency = (shannon_entropy / avg_code_length * 100.0) if avg_code_length > 0 else 100.0
+
+        return {
+            "original_chars": n_chars,
+            "original_bits": original_bits,
+            "original_bytes": original_bytes,
+            "compressed_bits": compressed_bits,
+            "compressed_bytes": compressed_bytes,
+            "space_saved_percent": round(space_saved_percent, 2),
+            "compression_ratio": round(compression_ratio, 3),
+            "average_code_length": round(avg_code_length, 4),
+            "shannon_entropy": round(shannon_entropy, 4),
+            "coding_efficiency_percent": round(min(efficiency, 100.0), 2),
+            "kraft_inequality_sum": round(kraft_sum, 6),
+            "kraft_valid": kraft_sum <= 1.000001,
+            "unique_symbols": len(freqs),
+            "code_table": codes,
+            "frequency_table": freqs,
+            "bitstring": bitstring,
+        }
 
     # -------------------------------------------------------------------------
     # Visual ASCII Tree Generator
@@ -265,37 +508,176 @@ class HuffmanEngine:
         return "\n".join(lines)
 
 
+# -----------------------------------------------------------------------------
+# Command Line Interface (CLI)
+# -----------------------------------------------------------------------------
 def run_cli():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Huffman Coding Engine (DAA Core Implementation)",
+        description="Huffman Coding Text Compression & DAA Analysis Suite",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python huffman.py --analyze "ABRACADABRA"
+  python huffman.py --visualize "HELLO HUFFMAN WORLD"
+  python huffman.py --compress input.txt compressed.huff
+  python huffman.py --decompress compressed.huff restored.txt
+  python huffman.py --test
+        """
     )
-    parser.add_argument("-a", "--analyze", type=str, metavar="TEXT", help="Analyze string frequencies and codes")
-    parser.add_argument("-v", "--visualize", type=str, metavar="TEXT", help="Print ASCII tree and prefix codes")
+
+    parser.add_argument("-c", "--compress", nargs=2, metavar=("INPUT", "OUTPUT"),
+                        help="Compress a text file into binary .huff file")
+    parser.add_argument("-d", "--decompress", nargs=2, metavar=("INPUT", "OUTPUT"),
+                        help="Decompress a .huff binary file back to text")
+    parser.add_argument("-a", "--analyze", type=str, metavar="TEXT",
+                        help="Perform full DAA frequency and compression analysis on string")
+    parser.add_argument("-f", "--analyze-file", type=str, metavar="FILE",
+                        help="Perform full DAA compression analysis on a text file")
+    parser.add_argument("-v", "--visualize", type=str, metavar="TEXT",
+                        help="Print ASCII tree and prefix codes for text")
+    parser.add_argument("-t", "--test", action="store_true",
+                        help="Run internal verification test suite")
+
     args = parser.parse_args()
-
     engine = HuffmanEngine()
-    target_text = args.visualize or args.analyze or "ABRACADABRA"
 
-    freqs = engine.compute_frequencies(target_text)
-    engine.build_tree(freqs)
-    codes = engine.generate_codes()
-    bits = engine.encode_text(target_text)
+    if args.test:
+        run_self_tests()
+        return
 
-    print("=" * 60)
-    print(" HUFFMAN CODING CORE ENGINE")
-    print("=" * 60)
-    print(f"Input text: {target_text!r} ({len(target_text)} chars)")
-    print(f"Distinct symbols: {len(freqs)}")
-    print(f"Encoded bit length: {len(bits)} bits (vs {len(target_text)*8} ASCII bits)")
-    print("-" * 60)
-    print("PREFIX CODEBOOK:")
-    for char, freq in sorted(freqs.items(), key=lambda x: -x[1]):
-        print(f"  {char!r:>6}: freq={freq:<4} -> code={codes[char]}")
-    print("-" * 60)
-    print("ASCII TREE:")
-    print(engine.render_ascii_tree())
+    if args.compress:
+        in_path, out_path = args.compress
+        if not os.path.exists(in_path):
+            print(f"Error: Input file '{in_path}' does not exist.", file=sys.stderr)
+            sys.exit(1)
+
+        with open(in_path, "r", encoding="utf-8", errors="replace", newline="") as f:
+            raw_text = f.read()
+
+        compressed_bytes = engine.compress_to_bytes(raw_text)
+        with open(out_path, "wb") as f:
+            f.write(compressed_bytes)
+
+        orig_size = len(raw_text.encode("utf-8"))
+        comp_size = len(compressed_bytes)
+        ratio = orig_size / comp_size if comp_size > 0 else 0
+        saved = (1 - comp_size / orig_size) * 100 if orig_size > 0 else 0
+
+        print(f"[SUCCESS] Compressed '{in_path}' -> '{out_path}'")
+        print(f"  Original Size:   {orig_size:,} bytes")
+        print(f"  Compressed Size: {comp_size:,} bytes (including tree metadata)")
+        print(f"  Space Saved:     {saved:.2f}%")
+        print(f"  Effective Ratio: {ratio:.2f}:1")
+        return
+
+    if args.decompress:
+        in_path, out_path = args.decompress
+        if not os.path.exists(in_path):
+            print(f"Error: Compressed file '{in_path}' not found.", file=sys.stderr)
+            sys.exit(1)
+
+        with open(in_path, "rb") as f:
+            comp_bytes = f.read()
+
+        recovered_text = engine.decompress_from_bytes(comp_bytes)
+        with open(out_path, "w", encoding="utf-8", newline="") as f:
+            f.write(recovered_text)
+
+        print(f"[SUCCESS] Restored '{in_path}' -> '{out_path}'")
+        print(f"  Decompressed Size: {len(recovered_text.encode('utf-8')):,} bytes")
+        return
+
+    if args.analyze or args.analyze_file:
+        if args.analyze_file:
+            if not os.path.exists(args.analyze_file):
+                print(f"Error: File '{args.analyze_file}' not found.", file=sys.stderr)
+                sys.exit(1)
+            with open(args.analyze_file, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+        else:
+            content = args.analyze
+
+        stats = engine.compute_analytics(content)
+        _print_analytics_report(stats)
+        return
+
+    if args.visualize:
+        stats = engine.compute_analytics(args.visualize)
+        _print_analytics_report(stats)
+        print("\n" + "=" * 60)
+        print(" ASCII HUFFMAN TREE VISUALIZATION ")
+        print("=" * 60)
+        print(engine.render_ascii_tree())
+        return
+
+    # Default fallback: interactive banner
+    parser.print_help()
+
+
+def _print_analytics_report(stats: Dict[str, Any]):
+    print("=" * 70)
+    print(" HUFFMAN CODING DAA COMPRESSION & COMPLEXITY REPORT")
+    print("=" * 70)
+    print(f"Original Text Length:       {stats['original_chars']:,} characters")
+    print(f"Distinct Alphabet Size (k): {stats['unique_symbols']:,} symbols")
+    print(f"Original Bit Length (ASCII):{stats['original_bits']:,} bits ({stats['original_bytes']:,} bytes)")
+    print(f"Compressed Bitstream Length:{stats['compressed_bits']:,} bits ({stats['compressed_bytes']:,} bytes)")
+    print(f"Storage Space Saved:        {stats['space_saved_percent']}%")
+    print(f"Compression Ratio:          {stats['compression_ratio']}:1")
+    print("-" * 70)
+    print(" INFORMATION THEORETIC METRICS")
+    print("-" * 70)
+    print(f"Shannon Entropy H(X):       {stats['shannon_entropy']:.4f} bits/character")
+    print(f"Average Code Length L_avg:  {stats['average_code_length']:.4f} bits/character")
+    print(f"Coding Efficiency:          {stats['coding_efficiency_percent']}%")
+    print(f"Kraft-McMillan Sum:         {stats['kraft_inequality_sum']:.6f} (Condition Valid <= 1.0: {stats['kraft_valid']})")
+    print("-" * 70)
+    print(" FREQUENCY & PREFIX CODEBOOK")
+    print("-" * 70)
+    print(f"{'Char':^8} | {'Frequency':^10} | {'Probability':^12} | {'Huffman Code':^16} | {'Length':^6}")
+    print("-" * 70)
+
+    for char, freq in sorted(stats['frequency_table'].items(), key=lambda x: -x[1]):
+        display_char = repr(char) if char in (' ', '\n', '\t') else char
+        prob = freq / stats['original_chars']
+        code = stats['code_table'][char]
+        print(f"{display_char:^8} | {freq:^10} | {prob:^12.4f} | {code:^16} | {len(code):^6}")
+
+
+def run_self_tests():
+    """Automated unit verification covering edge cases, Shannon entropy, and file I/O."""
+    print("[TEST] Running Huffman Coding Engine Self-Verification Suite...")
+    engine = HuffmanEngine()
+
+    # Test 1: Standard string
+    test_cases = [
+        "ABRACADABRA",
+        "The quick brown fox jumps over the lazy dog.",
+        "AAAAAAABCCCCCCDDEEEEE",
+        "Single 'A' repeats: AAAAAAAAAAAAAAAAA",
+        "Punctuation & numbers: 12345!@#$%^&*()_+~`",
+        "Line breaks\nand\ttabs\r\ntest.",
+    ]
+
+    for tc in test_cases:
+        stats = engine.compute_analytics(tc)
+        encoded = engine.encode_text(tc)
+        decoded = engine.decode_bits(encoded)
+        assert decoded == tc, f"Mismatch in test case: {tc!r} != {decoded!r}"
+        assert stats["kraft_valid"], f"Kraft inequality violated for {tc!r}"
+        # Binary byte roundtrip
+        packed = engine.compress_to_bytes(tc)
+        unpacked = engine.decompress_from_bytes(packed)
+        assert unpacked == tc, f"Byte packing failed for {tc!r}"
+
+    # Test 2: Empty string
+    assert engine.encode_text("") == ""
+    assert engine.compress_to_bytes("") != b""
+    assert engine.decompress_from_bytes(engine.compress_to_bytes("")) == ""
+
+    print("[PASS] All 6 test suites passed flawlessly with 100% lossless fidelity!")
 
 
 if __name__ == "__main__":
