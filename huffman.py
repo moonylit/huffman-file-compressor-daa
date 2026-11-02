@@ -208,6 +208,7 @@ class HuffmanEngine:
     def encode_text(self, text: str) -> str:
         """
         Encodes source string into a continuous binary bitstring using code table.
+        Rebuilds codebook dynamically if string has unseen characters.
         Time Complexity: O(N) where N is text length.
         """
         if not text:
@@ -385,6 +386,18 @@ class HuffmanEngine:
 
         return original_text
 
+    def get_tree_depth(self, node: Optional[HuffmanNode] = None) -> int:
+        """
+        Computes the maximum depth (levels from root to deepest leaf) of the binary tree.
+        """
+        if node is None:
+            node = self.root
+        if node is None or node.is_leaf():
+            return 0
+        left_d = self.get_tree_depth(node.left) if node.left else 0
+        right_d = self.get_tree_depth(node.right) if node.right else 0
+        return 1 + max(left_d, right_d)
+
     # -------------------------------------------------------------------------
     # DAA Phase 7: Mathematical & Empirical Compression Analytics
     # -------------------------------------------------------------------------
@@ -408,6 +421,7 @@ class HuffmanEngine:
                 "kraft_inequality_sum": 0.0,
                 "kraft_valid": True,
                 "unique_symbols": 0,
+                "tree_depth": 0,
             }
 
         freqs = self.compute_frequencies(text)
@@ -453,6 +467,7 @@ class HuffmanEngine:
             "kraft_inequality_sum": round(kraft_sum, 6),
             "kraft_valid": kraft_sum <= 1.000001,
             "unique_symbols": len(freqs),
+            "tree_depth": self.get_tree_depth(self.root),
             "code_table": codes,
             "frequency_table": freqs,
             "bitstring": bitstring,
@@ -594,7 +609,7 @@ Examples:
             if not os.path.exists(args.analyze_file):
                 print(f"Error: File '{args.analyze_file}' not found.", file=sys.stderr)
                 sys.exit(1)
-            with open(args.analyze_file, "r", encoding="utf-8", errors="replace") as f:
+            with open(args.analyze_file, "r", encoding="utf-8", errors="replace", newline="") as f:
                 content = f.read()
         else:
             content = args.analyze
@@ -622,6 +637,7 @@ def _print_analytics_report(stats: Dict[str, Any]):
     print("=" * 70)
     print(f"Original Text Length:       {stats['original_chars']:,} characters")
     print(f"Distinct Alphabet Size (k): {stats['unique_symbols']:,} symbols")
+    print(f"Maximum Tree Depth (Height):{stats['tree_depth']} levels")
     print(f"Original Bit Length (ASCII):{stats['original_bits']:,} bits ({stats['original_bytes']:,} bytes)")
     print(f"Compressed Bitstream Length:{stats['compressed_bits']:,} bits ({stats['compressed_bytes']:,} bytes)")
     print(f"Storage Space Saved:        {stats['space_saved_percent']}%")
@@ -667,6 +683,7 @@ def run_self_tests():
         decoded = engine.decode_bits(encoded)
         assert decoded == tc, f"Mismatch in test case: {tc!r} != {decoded!r}"
         assert stats["kraft_valid"], f"Kraft inequality violated for {tc!r}"
+        assert stats["tree_depth"] >= 0, "Invalid tree depth"
         # Binary byte roundtrip
         packed = engine.compress_to_bytes(tc)
         unpacked = engine.decompress_from_bytes(packed)
